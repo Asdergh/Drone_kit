@@ -1,41 +1,71 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import cv2
+import matplotlib.animation as animo
+import numpy as np
+import pandas as pd
+import random as rd
 
 
-class Amin_Plot():
+class AnimExample():
 
-    def __init__(self, delay=None, cmap=None, x_grid=None, y_grid=None,
-                 z_grid=None, phi=None, theta=None) -> None:
-        
-        self.delay = delay
+    def __init__(self, surface_mode: bool, X_grid=None,
+                  Y_grid=None, Z_grid=None, phi=None,
+                    theta=None, cmap=None, alpha=0) -> None:
+        self.surface_mode = surface_mode
+        #self.XYZ = np.dstack((X_grid, Y_grid, Z_grid))
+        self.XYmesh = np.column_stack((X_grid, Y_grid))
+        self.angles = np.column_stack((phi, theta))
+        self.figure = plt.figure()
+        self.axis = self.figure.add_subplot(projection="3d")
+        self.time_changes = np.linspace(-np.pi, np.pi, 100)
         self.cmap = cmap
-        self.x_grid = x_grid
-        self.y_grid = y_grid
-        self.z_grid = z_grid
-        self.phi = phi
-        self.theta = theta
-        self.axes_3d = plt.figure().add_subplot(projection="3d")
-        self.anim = animation
+        self.alpha = alpha
+    def anim_surface_(self, i):
+        self.axis.clear()
+        X_grid, Y_grid = np.meshgrid(self.XYmesh[:, 0], self.XYmesh[:, 1])
+        Z_grid = np.cos(X_grid + self.time_changes[i]) * np.sin(Y_grid + self.time_changes[i]) * np.sin(X_grid + Y_grid + self.time_changes[i])
+        self.axis.plot_surface(X_grid, Y_grid, Z_grid, cmap=self.cmap, alpha=self.alpha)
+        self.axis.contourf(X_grid, Y_grid, Z_grid, cmap="magma", zdir="z", offset=-2)
+        self.axis.scatter(X_grid, Y_grid, Z_grid, cmap="binary", c=Z_grid, s=0.123)
+        self.axis.set_xlabel("X label", color="blue")
+        self.axis.set_ylabel("Y label", color="red")
+        self.axis.set_zlabel("Z label", color="green")
     
-    def anim(self, i):
+    def anim_params_(self, i):
+        self.axis.clear()
+        phi, theta = np.meshgrid(self.angles[:, 0], self.angles[:, 1])
+        x_core = -np.cos(phi * self.time_changes[i]) * np.sin(theta * self.time_changes[i])
+        y_core = np.sin(phi * self.time_changes[i]) * np.sin(theta * self.time_changes[i])
+        z_core = np.cos(phi * self.time_changes[i])
+        self.axis.plot_surface(x_core, y_core, z_core, cmap=self.cmap, alpha=self.alpha)
+        self.axis.contourf(x_core, y_core, z_core, zdir="z", cmap="plasma", offset=-1)
+        self.axis.set_xlabel("X axis", color="blue")
+        self.axis.set_ylabel("Y axis", color="red")
+        self.axis.set_zlabel("Z axis", color="green")
+    
+    
+        
+    
 
-        self.phi, self.theta = np.meshgrid(self.phi, self.theta)
 
-        x_grid = np.cos(self.phi) * np.cos(self.theta)
-        y_grid = np.sin(self.phi) * np.cos(self.theta)
-        z_grid = np.sin(self.phi) * np.sin(self.theta)
-
-        self.axes_3d.scatter(x_grid, y_grid, x_grid, cmap=self.cmap, s=0.98)
     def run(self):
-
-        self.anim.FuncAnimation(self.axes_3d.figure, self.anim, interval=self.delay)
+        if self.surface_mode == True:
+            animation = animo.FuncAnimation(self.figure, self.anim_surface_, interval=100)
+        else:
+            animation = animo.FuncAnimation(self.figure, self.anim_params_, interval=1000)
+        
         plt.show()
 
+if __name__ == "__main__":
+    phi = np.linspace(0, np.pi, 100)
+    theta = np.linspace(0, np.pi, 100)
+    X_grid = np.linspace(0, np.pi, 100)
+    Y_grid = np.linspace(0, np.pi, 100)
+    print(np.dstack((phi, theta)))
+    print(np.column_stack((X_grid, Y_grid))[:, [0, 1]])
 
-phi = np.linspace(0, 2.0 * np.pi, 100)
-theta = np.linspace(0, 2.0 * np.pi, 100)
-new_object = Amin_Plot(delay=1000, phi=phi, theta=theta, cmap="magma").run()
+    obj = AnimExample(surface_mode=True, phi=phi, theta=theta, X_grid=X_grid, Y_grid=Y_grid, cmap="coolwarm", alpha=0.67).run()
 
-        
+
+
+
+
