@@ -19,6 +19,8 @@ class AnimExample():
         self.time_changes = np.linspace(-np.pi, np.pi, 100)
         self.cmap = cmap
         self.alpha = alpha
+
+
     def anim_surface_(self, i):
         self.axis.clear()
         X_grid, Y_grid = np.meshgrid(self.XYmesh[:, 0], self.XYmesh[:, 1])
@@ -29,6 +31,7 @@ class AnimExample():
         self.axis.set_xlabel("X label", color="blue")
         self.axis.set_ylabel("Y label", color="red")
         self.axis.set_zlabel("Z label", color="green")
+    
     
     def anim_params_(self, i):
         self.axis.clear()
