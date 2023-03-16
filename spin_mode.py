@@ -47,9 +47,9 @@ class Spin_mode():
         phi, theta = np.linspace(np.pi, -np.pi, 100), np.linspace(np.pi, -np.pi)
         phi, theta = np.meshgrid(phi, theta)
         
-        x_grid = np.sin(phi) + np.cos(theta)
-        y_grid = np.cos(phi) + np.sin(theta)
-        z_grid = np.cos(phi)
+        x_grid = np.sin(phi) + np.cos(theta) * np.sin(phi)
+        y_grid = np.cos(phi) * np.sin(theta) + np.sin(theta)
+        z_grid = np.cos(theta)
 
         core_array = [cords for cords in zip(x_grid, y_grid, z_grid)]
         core_array = np.asarray(core_array)
@@ -84,7 +84,7 @@ class Spin_mode():
         
 if __name__ == "__main__":
     obj = Spin_mode(projections=False, pr_onX=False, pr_onY=False, pr_onZ=True, scatter_mode=True, distrib_on_x=True, cmap_for_projection_x="magma",
-                    cmap_for_projection_y="magma", cmap_for_projection_z="magma", cmap_for_scatter="binary", cmap="magma", alpha=0.67, scat_point_size=0.12).run()
+                    cmap_for_projection_y="magma", cmap_for_projection_z="magma", cmap_for_scatter="binary", cmap="twilight", alpha=0.67, scat_point_size=0.12).run()
 
     
         
