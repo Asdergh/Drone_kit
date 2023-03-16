@@ -5,12 +5,11 @@ import matplotlib.animation as animo
 
 plt.style.use("dark_background")
 class Spin_mode():
-    def __init__(self, projections=False, cmap=None, alpha=0,
+    def __init__(self, projections=False, cmap=None, alpha=1,
                   scatter_mode=False, cmap_for_projection_z=None, cmap_for_projection_x=None,
                   cmap_for_projection_y=None, cmap_for_scatter=None, pr_onX=False,
-                  pr_onY=False, pr_onZ=False, distrib_on_z=False,
-                  distrib_on_y=False, distrib_on_x=False, scat_point_size=0.78,
-                  rotation_axis=None) -> None:
+                  pr_onY=False, pr_onZ=False, distrib_on_="z", scat_point_size=0.78,
+                  rotation_axis=None, quiver_plot=False) -> None:
         
         self.projections = projections
         self.cmap = cmap
@@ -21,10 +20,9 @@ class Spin_mode():
         self.scatter_mode = scatter_mode
         self.scat_s = scat_point_size
         self.rotation_axis = rotation_axis
+        self.quiver_plot = quiver_plot
 
-        self.distrib_x = distrib_on_x
-        self.distrib_y = distrib_on_y
-        self.distrib_z = distrib_on_z
+        self.distrib_on = distrib_on_
 
         self.on_x = pr_onX
         self.on_y = pr_onY
@@ -95,6 +93,7 @@ class Spin_mode():
         result_z = core_array[:, 2]
 
         self.axis_3d.plot_surface(result_x, result_y, result_z, cmap=self.cmap, alpha=self.alpha)
+
         if self.projections == True:
             if self.on_z == True:
                 self.axis_3d.contourf(result_x, result_y, result_z, zdir="z", offset=-2, cmap=self.cmap_pr_z)
@@ -104,20 +103,27 @@ class Spin_mode():
                 self.axis_3d.contourf(result_x, result_y, result_z, zdir="y", offset=-2, cmap=self.cmap_pr_y)
 
         if self.scatter_mode == True:
-            if self.distrib_x == True:
+            if self.distrib_on == "x":
                 self.axis_3d.scatter(result_x, result_y, result_z, c=result_x, cmap=self.cmap_scat, s=self.scat_s)
-            elif self.distrib_y == True:
+            elif self.distrib_on == "y":
                 self.axis_3d.scatter(result_x, result_y, result_z, c=result_y, cmap=self.cmap_scat, s=self.scat_s)
-            elif self.distrib_z == True:
+            elif self.distrib_on == "z":
                 self.axis_3d.scatter(result_x, result_y, result_z, c=result_z, cmap=self.cmap_scat, s=self.scat_s)
         
+        if self.quiver_plot == True:
+            self.axis_3d.scatter((x_grid.sum() / len(x_grid)), (y_grid.sum() / len(y_grid)), (z_grid.sum() / len(z_grid)), s=200, color="green")
+            self.axis_3d.quiver(0, 0, -2, 3, 0, 0, color="green")
+            self.axis_3d.quiver(0, 0, -2, 0, 3, 0, color="red")
+            self.axis_3d.quiver(0, 0, -2, 0, 0, 3, color="blue")
+
+    
+    
+
     def run(self):
         anim = animo.FuncAnimation(self.figure, self.anim_, interval=100)
         plt.show()
-        
-if __name__ == "__main__":
-    obj = Spin_mode(projections=False, pr_onX=False, pr_onY=False, pr_onZ=True, scatter_mode=True, distrib_on_x=True, cmap_for_projection_x="magma",
-                    cmap_for_projection_y="magma", cmap_for_projection_z="magma", cmap_for_scatter="binary", cmap="twilight", alpha=0.67, scat_point_size=0.12).run()
 
+if __name__ == "__main__":
+    obj = Spin_mode(quiver_plot=True, cmap="coolwarm", scatter_mode=True, cmap_for_scatter="binary", scat_point_size=0.34, rotation_axis="x", alpha=0.65, distrib_on_="x").run()
     
         
