@@ -9,7 +9,8 @@ class Spin_mode():
                   scatter_mode=False, cmap_for_projection_z=None, cmap_for_projection_x=None,
                   cmap_for_projection_y=None, cmap_for_scatter=None, pr_onX=False,
                   pr_onY=False, pr_onZ=False, distrib_on_z=False,
-                  distrib_on_y=False, distrib_on_x=False, scat_point_size=0.78) -> None:
+                  distrib_on_y=False, distrib_on_x=False, scat_point_size=0.78,
+                  rotation_axis=None) -> None:
         
         self.projections = projections
         self.cmap = cmap
@@ -19,6 +20,7 @@ class Spin_mode():
         self.cmap_scat = cmap_for_scatter
         self.scatter_mode = scatter_mode
         self.scat_s = scat_point_size
+        self.rotation_axis = rotation_axis
 
         self.distrib_x = distrib_on_x
         self.distrib_y = distrib_on_y
@@ -41,6 +43,30 @@ class Spin_mode():
             ])
         return rot_mat.dot(A)
     
+    def rotation_on_x_(self, A, angle):
+        rot_mat = np.array([
+            [1, 0, 0,],
+            [0, mt.cos(np.pi * angle), mt.sin(np.pi * angle)],
+            [0, -mt.sin(np.pi * angle), mt.cos(np.pi * angle)]
+        ])
+        return rot_mat.dot(A)
+    
+    def rotation_on_y_(self, A, angle):
+        rot_mat = np.array([
+            [mt.cos(angle * np.pi), 0, mt.sin(angle * np.pi)],
+            [0, 1, 0],
+            [-mt.sin(angle * np.pi), 0, mt.cos(np.pi * angle)]
+        ])
+        return rot_mat.dot(A)
+    
+    def rotation_on_z_(self, A, angle):
+        rot_mat = np.array([
+            [0, 0, 1],
+            [mt.cos(np.pi * angle), mt.sin(np.pi * angle), 0],
+            [-mt.sin(angle * np.pi), mt.cos(angle * np.pi), 0]
+        ])
+        return rot_mat.dot(A)
+    
     def anim_(self, i):
 
         self.axis_3d.clear()
@@ -55,7 +81,14 @@ class Spin_mode():
         core_array = np.asarray(core_array)
 
         for point_number in range(len(core_array)):
-            core_array[point_number] = self.rotation_matrix_(core_array[point_number], i)
+            if self.rotation_axis == "x":
+                core_array[point_number] = self.rotation_on_x_(core_array[point_number], i)
+            elif self.rotation_axis == "y":
+                core_array[point_number] = self.rotation_on_y_(core_array[point_number], i)
+            elif self.rotation_axis == "z":
+                core_array[point_number] = self.rotation_on_z_(core_array[point_number], i)
+            else:
+                core_array[point_number] = self.rotation_on_y_(core_array[point_number], i)
         
         result_x = core_array[:, 0]
         result_y = core_array[:, 1]
