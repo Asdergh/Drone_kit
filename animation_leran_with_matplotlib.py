@@ -28,6 +28,7 @@ class AnimExample():
         self.axis.plot_surface(X_grid, Y_grid, Z_grid, cmap=self.cmap, alpha=self.alpha)
         self.axis.contourf(X_grid, Y_grid, Z_grid, cmap="magma", zdir="z", offset=-2)
         self.axis.scatter(X_grid, Y_grid, Z_grid, cmap="binary", c=Z_grid, s=0.123)
+        self.axis.scatter(0, 0, 0) 
         self.axis.set_xlabel("X label", color="blue")
         self.axis.set_ylabel("Y label", color="red")
         self.axis.set_zlabel("Z label", color="green")
