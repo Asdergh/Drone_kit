@@ -1,6 +1,8 @@
 import open3d as o3d
 import numpy as np
 import cv2
+import laspy
+
 
 
 def generate_random_pointcloud_data(count_of_points, normal_mode=False, x_mean=0, y_mean=0, z_mean=0, deviation=0.01):
@@ -26,12 +28,13 @@ def generate_random_pointcloud_data(count_of_points, normal_mode=False, x_mean=0
 generate_random_pointcloud_data(normal_mode=False, count_of_points=120000)
 generate_random_pointcloud_data(normal_mode=True, x_mean=5, y_mean=6, z_mean=3, deviation=0.78, count_of_points=120000)
 
-pcd = o3d.io.read_point_cloud("point_cloud_normal.txt", format="xyz")
-o3d.visualization.draw_geometries([pcd],
-                                  zoom=5.3412,
-                                  front=[0.4257, -0.2125, -0.8795],
-                                  lookat=[2.6172, 2.0475, 1.532],
-                                  up=[-0.0694, -0.9768, 0.2024])
+
+PG = o3d.geometry.PointCloud()
+cores = laspy.read("points.las")
+core_array = np.stack([cores.X, cores.Y, cores.Z], axis=0).transpose((1, 0))
+PG.points = o3d.utility.Vector3dVector(core_array)
+o3d.visualization.draw_geometries([core_array])
+print(core_array)
 
 
 
