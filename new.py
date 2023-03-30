@@ -28,8 +28,8 @@ axis_3d.set_xlabel("X", color="b")
 axis_3d.set_ylabel("Y", color="r")
 axis_3d.set_zlabel("Z", color="g")
 
-x, y, z = np.meshgrid(np.linspace(-np.pi, np.pi, 8), np.linspace(-np.pi, np.pi, 8), 
-                      np.linspace(-np.pi, np.pi, 8))
+x, y, z = np.meshgrid(np.linspace(-np.pi, np.pi, 14), np.linspace(-np.pi, np.pi, 14), 
+                      np.linspace(-np.pi, np.pi, 14))
 
 i, j, k = B_magnatic_induction(2, 2.5, x, y, z, 4.5)[0], B_magnatic_induction(2, 2.5, x, y, z, 4.5)[1], B_magnatic_induction(2, 2.5, x ,y, z, 4.5)[2]
 B_vector = np.stack((i, j, k), axis=0).T
@@ -37,7 +37,7 @@ I_vector = np.stack((x, y, z), axis=0).T
 Eamper_vector = np.cross(I_vector, B_vector)
 print(Eamper_vector, B_vector, I_vector)
 
-axis_3d.quiver(x, y, z, i, j, k, cmap=plt.cm.jet, alpha=0.78)
+axis_3d.quiver(x, z, y, i, j, k, color="gray", alpha=0.78)
 
 axis_3d.scatter(0, 0, 0, color="red", s=200)
 axis_3d.quiver(0, 0, 0, 3, 0, 0, color="b")

@@ -9,7 +9,8 @@ class AnimExample():
 
     def __init__(self, surface_mode: bool, X_grid=None,
                   Y_grid=None, Z_grid=None, phi=None,
-                    theta=None, cmap=None, alpha=0) -> None:
+                    theta=None, cmap=None, gradient_mode=False, alpha=0) -> None:
+        self.Gn_mode = gradient_mode
         self.surface_mode = surface_mode
         #self.XYZ = np.dstack((X_grid, Y_grid, Z_grid))
         self.XYmesh = np.column_stack((X_grid, Y_grid))
@@ -23,12 +24,21 @@ class AnimExample():
 
     def anim_surface_(self, i):
         self.axis.clear()
+
         X_grid, Y_grid = np.meshgrid(self.XYmesh[:, 0], self.XYmesh[:, 1])
-        Z_grid = np.cos(X_grid + self.time_changes[i]) * np.sin(Y_grid + self.time_changes[i]) * np.sin(X_grid + Y_grid + self.time_changes[i])
+        #X_gradient, Y_gradient = np.gradient(X_grid), np.gradient(Y_grid)
+        Z_grid = np.cos(X_grid + self.time_changes[i]) * np.sin(Y_grid + self.time_changes[i]) * np.sin(X_grid + Y_grid + self.time_changes[i]) 
+        #Z_gradient = np.cos(X_gradient + self.time_changes[i]) * np.sin(Y_gradient + self.time_changes[i]) * np.sin(X_gradient + Y_gradient + self.time_changes[i])
+
+        """if self.Gn_mode == True:
+            self.axis.plot_surface(X_gradient, Y_gradient, Z_gradient, cmap=self.cmap, alpha=self.alpha)
+            self.axis.contourf(X_gradient, Y_gradient, Z_gradient, cmap="magma", zdir="z", offset=-2)
+            self.axis.scatter(X_gradient, Y_gradient, Z_gradient, cmap="binry", c=Z_gradient, s=0.123)"""
+        
         self.axis.plot_surface(X_grid, Y_grid, Z_grid, cmap=self.cmap, alpha=self.alpha)
         self.axis.contourf(X_grid, Y_grid, Z_grid, cmap="magma", zdir="z", offset=-2)
         self.axis.scatter(X_grid, Y_grid, Z_grid, cmap="binary", c=Z_grid, s=0.123)
-        self.axis.scatter(0, 0, 0) 
+        
         self.axis.set_xlabel("X label", color="blue")
         self.axis.set_ylabel("Y label", color="red")
         self.axis.set_zlabel("Z label", color="green")
@@ -67,7 +77,7 @@ if __name__ == "__main__":
     print(np.dstack((phi, theta)))
     print(np.column_stack((X_grid, Y_grid))[:, [0, 1]])
 
-    obj = AnimExample(surface_mode=True, phi=phi, theta=theta, X_grid=X_grid, Y_grid=Y_grid, cmap="coolwarm", alpha=0.67).run()
+    obj = AnimExample(surface_mode=True, phi=phi, theta=theta, X_grid=X_grid, Y_grid=Y_grid, cmap="coolwarm", alpha=0.67, gradient_mode=False).run()
 
 
 
