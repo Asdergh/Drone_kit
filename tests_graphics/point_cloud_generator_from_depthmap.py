@@ -70,10 +70,7 @@ def generate_data(count_of_points, normal_distrib_mode, sigma_x: float, mean_x: 
 generate_data(count_of_points=12000, normal_distrib_mode=False, mean_x=12, sigma_x=0.67, mean_y=12, sigma_y=1.24, mean_z=67, sigma_z=1.12)
 pcd = o3d.io.read_point_cloud("DATA.txt", format="xyz")
 o3d.visualization.draw_geometries([pcd],
-                                  zoom=0.3412,
-                                  front=[0.4257, -0.2125, -0.8795],
-                                  lookat=[16.6172, 6.0475, 56.532],
-                                  up=[-0.0694, -0.9768, 0.2024])
+                                  zoom=0.1)
    
     
 
