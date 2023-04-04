@@ -18,7 +18,6 @@ def generate_trajactory():
     iter = 0
     while True:
         #radiuse_choice = int(input("chouse the radiue of array"))
-        
         if iter < 3:
             r *= rd.randint(0, 45)
             X = r * np.cos(phi) 
@@ -32,19 +31,25 @@ def generate_trajactory():
              animo = animation.FuncAnimation(figure, trajectory_graph, interval=100)
              plt.show()
              break
-        
         iter += 1
 
 def trajectory_graph(i):
 
-    
     with open("data.txt", "r") as file:
+                
                 data = pd.read_csv("data.txt", sep="\t")
-                x_cores = np.asarray(data.iloc[:, 0] + i)
-                y_cores = np.asarray(data.iloc[:, 1] + i)
-                z_cores = np.asarray(data.iloc[:, 2] + i)
+                x_cores = np.asarray(data.iloc[:, 0])
+                y_cores = np.asarray(data.iloc[:, 1])
+                z_cores = np.asarray(data.iloc[:, 2])
+                r = np.sqrt(x_cores ** 2 + y_cores  ** 2 + z_cores ** 2)
+                phi = np.linspace(0, np.pi, len(r))
+                theta = np.linspace(-np.pi, 0, len(r))
 
-                axis_3d.plot(x_cores, y_cores, z_cores, color="red", alpha=0.67)
+                x_res_cores = np.cos(phi + i) * np.sin(theta + i)
+                y_res_cores = np.sin(phi + i) * -np.sin(theta + i)
+                z_res_cores = np.cos(phi + i) 
+
+                axis_3d.plot(x_res_cores, y_res_cores, z_res_cores, color="red", alpha=0.67)
 
 generate_trajactory()
 
