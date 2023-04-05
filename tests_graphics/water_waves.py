@@ -1,38 +1,30 @@
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+import numpy as np
+import random as rd
+import matplotlib.animation as animo
 
+figure = plt.figure()
+axis_3d = figure.add_subplot(projection="3d")
 
+theta = np.linspace(0, np.pi * 2, 100)
+phi = np.linspace(0, np.pi * 2, 100)
+time = np.linspace(0, np.pi, 100)
 
-class Water_waves():
-    def __init__(self, g_velocity: int, depth: int, x_cores=None, y_cores=None) -> None:
-        self.G = g_velocity
-        self.D = depth
-        self.time = np.linspace(0, np.pi, 100)
-        if (x_cores != None) and (y_cores != None):
-            self.Grid = np.stack([x_cores, y_cores])
+plt.style.use("seaborn")
 
-        else:
-            x_grid = np.linspace(-np.pi, np.pi, 100)
-            y_grid = np.linspace(-np.pi, np.pi, 100)
-            self.Grid = np.stack([x_grid, y_grid])
-
-        self.figure = plt.figure()
-        self.axis_3d = self.figure.add_subplot(projection="3d")
+def animation(i):
     
-    def waves(self, i):
+    axis_3d.clear()
+    x_cores = np.linspace(0, np.pi, 100)
+    y_cores = np.linspace(0, np.pi, 100)
+    
+    xx_cores, yy_cores = np.meshgrid(x_cores, y_cores)
+    eta = np.tanh((-1 * (xx_cores * i - 5) ** 2 / 10) - (yy_cores * i - 5) ** 2 / 20) / 2
 
-        self.axis_3d.clear()
-        x_grid, y_grid = np.meshgrid(self.Grid[0], self.Grid[1])
-        eta = ((y_grid * self.time[i]) / 2 * np.pi) * np.tanh((2 * np.pi * self.D) / 2 * np.pi) + x_grid + y_grid 
+    axis_3d.plot_surface(xx_cores, yy_cores, eta, cmap="coolwarm", alpha=0.76)
+    axis_3d.contour(xx_cores, yy_cores, eta, zdir="z", offset=-0.50, cmap="coolwarm")
+    axis_3d.contour(xx_cores, yy_cores, eta, zdir="x", offset=0, cmap="coolwarm")
+    axis_3d.contour(xx_cores, yy_cores, eta, zdir="y", offset=0, cmap="coolwarm")
 
-        self.axis_3d.plot_surface(x_grid, y_grid, eta, cmap="coolwarm", alpha=0.76)
-        self.axis_3d.contourf(x_grid, y_grid, eta, zdir="z", cmap="coolwarm")
-
-    def run(self):
-        anim = animation.FuncAnimation(self.figure, self.waves, interval=100)
-        plt.show()
-
-if __name__ == "__main__":
-    obj = Water_waves(g_velocity=12.0, depth=30.0).run()
+anim = animo.FuncAnimation(figure, animation, interval=100)
+plt.show()
