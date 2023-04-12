@@ -20,7 +20,7 @@ def animation(i):
     
     xx_cores, yy_cores = np.meshgrid(x_cores, y_cores)
     #eta = np.tanh((-1 * (xx_cores * i - 5) ** 2 / 20) - (yy_cores * i - 5) ** 2 / 100) / 2
-    eta = 123 * np.sin(xx_cores ** 2 + i - yy_cores ** 2 + i - 35)
+    eta = 123 * np.sin(xx_cores ** 2 + i + yy_cores ** 2 + i - 35)
     axis_3d.plot_surface(xx_cores, yy_cores, eta, cmap="twilight", alpha=0.76)
     axis_3d.contour(xx_cores, yy_cores, eta, zdir="z", offset=-0.50, cmap="coolwarm")
     axis_3d.contour(xx_cores, yy_cores, eta, zdir="x", offset=0, cmap="coolwarm")
