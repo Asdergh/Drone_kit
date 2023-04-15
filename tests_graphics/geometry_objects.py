@@ -82,7 +82,41 @@ class File_treatmenter():
 
 class Geometry(File_treatmenter):
 
-    def __init__(self) -> None:
+    def __init__(self, x_cores, y_cores, z_cores) -> None:
+        self.x_cores = x_cores
+        self.y_cores = y_cores
+        self.x_grid, self.y_grid = np.meshgrid(self.x_cores, self.y_cores)
+        self.z_cores = z_cores
+    
+    def create_core(self, operation_string: str):
+
+        self.result_core_array = []
+        self.flag_dict = {
+            "X": self.x_grid,
+            "Y": self.y_grid,
+            "Z": self.z_grid
+        }
+        curent_object = ""
+        border_of_string = 0
+        for (item, str_object) in enumerate(operation_string):
+            if str_object == "X":
+                curent_object = str_object
+                self.result_core_array = self.flag_dict[curent_object]
+                border_of_string = item
+                break
+            
+            elif str_object == "Y":
+                curent_object = str_object
+                self.result_core_array = self.flag_dict[curent_object]
+                break
+
+            elif str_object == "Z":
+                curent_object = str_object
+                self.result_core_array = self.flag_dict[curent_object]
+                break
+
+                    
+
         
 
 
