@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.animation as animaiton
+import matplotlib.animation as animation
 import random as rd
 
 
@@ -154,10 +154,10 @@ class Geometry(File_treatmenter):
                 data = pd.read_csv(self.file_name, delimiter="\t")
                 X_cores = np.array(data.iloc[:, 0])
                 Y_cores = np.array(data.iloc[:, 1])
-                z_cores = np.array(data.iloc[:, 1])
+                Z_cores = np.array(data.iloc[:, 1])
             
             else:
-                data = pd.read_csv(file_name, delimiter="\t")
+                self.data = pd.read_csv(file_name, delimiter="\t")
                 X_cores = np.array(data.iloc[:, 0])
                 Y_cores = np.array(data.iloc[:, 1])
                 Z_cores = np.array(data.iloc[:, 2])
@@ -180,18 +180,56 @@ class Geometry(File_treatmenter):
             self.axis_3d.quiver(0, 0, 0, 0, 0, 3, color="green")
 
             plt.show()
+    
+    def generate_animaiton(self, file_name=None, file_mode=None, distrib=None):
+
+        def points(i):
+            global x_cores, y_cores, z_cores
+            self.axis_3d.scatter(x_cores, y_cores, z_cores, cmap=self.cmap, distrib=distrib, s=0.76)
+        
+        def surface(i):
+            global x_cores, y_cores, z_cores
+            self.axis_3d.plot_surface(x_cores, y_cores, z_cores, cmap=self.cmap, alpha=self.alpha)
+
+
+        if file_mode == True:
+            if file_name == None:
+                data = pd.read_csv(self.fiel_name, delimiter="\t")
+                x_cores = data[:, 0]
+                y_cores = data[:, 1]
+                z_cores = data[:, 2]
+
+                animo = animation.FuncAnimation(self.figure, points, interval=100)
             
+            else:
+                data = pd.read_csv(file_name, delimiter="\t")
+                x_cores = data[:, 0]
+                y_cores = data[:, 1]
+                z_cores = data[:, 2]
+
+                animo = animation.FuncAnimation(self.figure, points, interval=100)
+                plt.show()
+
+        else:
+            x_cores = self.x_grid
+            y_cores = self.y_grid
+            z_cores = self.result_core_array
+
+            animo = animation.FuncAnimation(self.figure, surface, interval=100)
+            plt.show()
+
+
 
 
 x, y = np.linspace(-np.pi, np.pi, 100), np.linspace(-np.pi, np.pi, 100)
 z_cores = np.linspace(-np.pi, np.pi, 100)
 #x, y = np.meshgrid(x, y)
-object = Geometry(x_cores=x, y_cores=y, cmap="twilight", alpha=0.76,)
+object = Geometry(x_cores=x, y_cores=y, cmap="twilight", alpha=0.76)
 object_2 = File_treatmenter(file_name="distrib_data.txt", data_type="gamma", count_ot_elements=1000)
 object_2.generate_data()
-object.create_core("X *Y CY *Y SX")
-object.generate_graph(file_mode=True, file_name="distrib_data.txt", distrib="Z")
-
+object.create_core("X *X +Y -CX")
+#object.generate_graph(file_mode=False, file_name="distrib_data.txt", distrib="Z")
+#
             
         
 
